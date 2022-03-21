@@ -45,14 +45,8 @@ public abstract class AbstractXMLRepository<ID, E extends HasID<ID>> extends Abs
                 }
             }
         }
-        catch(ParserConfigurationException pce) {
-            pce.printStackTrace();
-        }
-        catch(SAXException s) {
-            s.printStackTrace();
-        }
-        catch(IOException i) {
-            i.printStackTrace();
+        catch(ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
         }
     }
 
