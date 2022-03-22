@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import ssvv.example.MyException
 import ssvv.example.repository.NotaXMLRepository
 import ssvv.example.repository.StudentXMLRepository
 import ssvv.example.repository.TemaXMLRepository
@@ -107,6 +108,66 @@ internal class ServiceTest {
         } catch (_: Exception) {
         }
         Assertions.assertEquals(service.findAllStudents().toList().size, 0)
+    }
+
+    @Test
+    fun addAssignment_validAssignment_addsTheAssignment() {
+        try {
+            service.addAssignment("123", "123", 2, 1)
+            Assertions.assertEquals(service.findAllTeme().toList().size, 1)
+        } catch (_: MyException) {
+            Assertions.fail()
+        }
+    }
+
+    @Test
+    fun addAssignment_invalidAssignmentId_doesntAddTheAssignment() {
+        try {
+            service.addAssignment("", "123", 2, 1)
+            Assertions.fail()
+        } catch (_: MyException) {
+            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+        }
+    }
+
+    @Test
+    fun addAssignment_invalidAssignmentDescriere_doesntAddTheAssignment() {
+        try {
+            service.addAssignment("123", "", 2, 1)
+            Assertions.fail()
+        } catch (_: MyException) {
+            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+        }
+    }
+
+    @Test
+    fun addAssignment_invalidAssignmentDeadline_doesntAddTheAssignment() {
+        try {
+            service.addAssignment("123", "123", -1, 2)
+            Assertions.fail()
+        } catch (_: MyException) {
+            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+        }
+    }
+
+    @Test
+    fun addAssignment_invalidAssignmentStartline_doesntAddTheAssignment() {
+        try {
+            service.addAssignment("123", "", 1, -1)
+            Assertions.fail()
+        } catch (_: MyException) {
+            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+        }
+    }
+
+    @Test
+    fun addAssignment_invalidAssignmentCombinationOfDeadlineStartline_doesntAddTheAssignment() {
+        try {
+            service.addAssignment("123", "", 1, 2)
+            Assertions.fail()
+        } catch (_: MyException) {
+            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+        }
     }
 }
 
