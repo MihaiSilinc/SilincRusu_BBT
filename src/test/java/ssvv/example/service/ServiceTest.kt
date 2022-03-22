@@ -108,7 +108,7 @@ internal class ServiceTest {
     @Test
     fun addStudent_invalidStudentGroupBiggerThan938_doesntAddTheStudent() {
         try {
-            service.addStudent("", "boalfa", 1000)
+            service.addStudent("123", "boalfa", 1000)
             Assertions.fail()
         } catch (e: MyException) {
             Assertions.assertEquals(service.findAllStudents().toList().size, 0)
