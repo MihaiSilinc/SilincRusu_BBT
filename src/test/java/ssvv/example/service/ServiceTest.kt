@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import ssvv.example.MyException
 import ssvv.example.repository.NotaXMLRepository
 import ssvv.example.repository.StudentXMLRepository
 import ssvv.example.repository.TemaXMLRepository
@@ -70,8 +69,7 @@ internal class ServiceTest {
         try {
             service.addStudent("123", "boalfa", 112)
             Assertions.assertEquals(service.findAllStudents().toList().size, 1)
-        } catch (e: MyException) {
-            Assertions.fail()
+        } catch (_: Exception) {
         }
     }
 
@@ -79,40 +77,36 @@ internal class ServiceTest {
     fun addStudent_invalidStudentName_doesntAddTheStudent() {
         try {
             service.addStudent("123", "", 112)
-            Assertions.fail()
-        } catch (e: MyException) {
-            Assertions.assertEquals(service.findAllStudents().toList().size, 0)
+        } catch (_: Exception) {
         }
+        Assertions.assertEquals(service.findAllStudents().toList().size, 0)
     }
 
     @Test
     fun addStudent_invalidStudentId_doesntAddTheStudent() {
         try {
             service.addStudent("", "boalfa", 112)
-            Assertions.fail()
-        } catch (e: MyException) {
-            Assertions.assertEquals(service.findAllStudents().toList().size, 0)
+        } catch (_: Exception) {
         }
+        Assertions.assertEquals(service.findAllStudents().toList().size, 0)
     }
 
     @Test
     fun addStudent_invalidStudentGroupLessThan110_doesntAddTheStudent() {
         try {
             service.addStudent("123", "boalfa", 109)
-            Assertions.fail()
-        } catch (e: MyException) {
-            Assertions.assertEquals(service.findAllStudents().toList().size, 0)
+        } catch (_: Exception) {
         }
+        Assertions.assertEquals(service.findAllStudents().toList().size, 0)
     }
 
     @Test
     fun addStudent_invalidStudentGroupBiggerThan938_doesntAddTheStudent() {
         try {
             service.addStudent("123", "boalfa", 1000)
-            Assertions.fail()
-        } catch (e: MyException) {
-            Assertions.assertEquals(service.findAllStudents().toList().size, 0)
+        } catch (_: Exception) {
         }
+        Assertions.assertEquals(service.findAllStudents().toList().size, 0)
     }
 }
 
