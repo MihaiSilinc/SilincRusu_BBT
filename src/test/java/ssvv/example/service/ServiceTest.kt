@@ -30,9 +30,6 @@ internal class ServiceTest {
     fun setUp() {
         val xmlInit = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><inbox></inbox>"
 
-        Files.createFile(Paths.get(studentFilePath))
-        Files.createFile(Paths.get(temaFilePath))
-        Files.createFile(Paths.get(notaFilePath))
 
         Files.write(
                 Paths.get(studentFilePath),
@@ -64,9 +61,7 @@ internal class ServiceTest {
     @AfterEach
     @Throws(IOException::class)
     fun tearDown() {
-        Files.deleteIfExists(Paths.get(studentFilePath))
-        Files.deleteIfExists(Paths.get(temaFilePath))
-        Files.deleteIfExists(Paths.get(notaFilePath))
+
     }
 
     @Test
