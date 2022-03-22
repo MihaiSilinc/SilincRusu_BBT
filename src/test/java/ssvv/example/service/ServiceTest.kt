@@ -29,6 +29,11 @@ internal class ServiceTest {
     @BeforeEach
     fun setUp() {
         val xmlInit = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><inbox></inbox>"
+
+        Files.createFile(Paths.get(studentFilePath))
+        Files.createFile(Paths.get(temaFilePath))
+        Files.createFile(Paths.get(notaFilePath))
+
         Files.write(
                 Paths.get(studentFilePath),
                 Collections.singletonList(xmlInit),
