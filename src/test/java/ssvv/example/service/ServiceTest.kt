@@ -75,6 +75,17 @@ internal class ServiceTest {
     }
 
     @Test
+    fun addStudent_invalidStudent_SameID_DoesNotAddTheStudent() {
+        try {
+            service.addStudent("129", "bo", 112)
+            service.addStudent("129", "bo", 112)
+        }
+        catch (_: Exception) {
+        }
+        Assertions.assertEquals(service.findAllStudents().toList().size, 1)
+    }
+
+    @Test
     fun addStudent_invalidStudentName_doesntAddTheStudent() {
         try {
             service.addStudent("123", "", 112)
