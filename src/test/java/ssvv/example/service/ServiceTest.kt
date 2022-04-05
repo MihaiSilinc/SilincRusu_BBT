@@ -125,7 +125,7 @@ internal class ServiceTest {
     fun addAssignment_validAssignment_addsTheAssignment() {
         try {
             service.addAssignment("123", "123", 2, 1)
-            Assertions.assertEquals(service.findAllTeme().toList().size, 1)
+            Assertions.assertEquals(service.findAllGrades().toList().size, 1)
         } catch (_: MyException) {
             Assertions.fail()
         }
@@ -137,7 +137,7 @@ internal class ServiceTest {
             service.addAssignment("", "123", 2, 1)
             Assertions.fail()
         } catch (_: MyException) {
-            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+            Assertions.assertEquals(service.findAllGrades().toList().size, 0)
         }
     }
 
@@ -147,7 +147,7 @@ internal class ServiceTest {
             service.addAssignment("123", "", 2, 1)
             Assertions.fail()
         } catch (_: MyException) {
-            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+            Assertions.assertEquals(service.findAllGrades().toList().size, 0)
         }
     }
 
@@ -157,7 +157,7 @@ internal class ServiceTest {
             service.addAssignment("123", "123", -1, 2)
             Assertions.fail()
         } catch (_: MyException) {
-            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+            Assertions.assertEquals(service.findAllGrades().toList().size, 0)
         }
     }
 
@@ -167,7 +167,7 @@ internal class ServiceTest {
             service.addAssignment("123", "", 1, -1)
             Assertions.fail()
         } catch (_: MyException) {
-            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+            Assertions.assertEquals(service.findAllGrades().toList().size, 0)
         }
     }
 
@@ -177,7 +177,20 @@ internal class ServiceTest {
             service.addAssignment("123", "", 1, 2)
             Assertions.fail()
         } catch (_: MyException) {
-            Assertions.assertEquals(service.findAllTeme().toList().size, 0)
+            Assertions.assertEquals(service.findAllGrades().toList().size, 0)
+        }
+    }
+
+    @Test
+    fun addGrade_validGrade_addsTheGrade() {
+        try {
+            service.addAssignment("123", "123", 2, 1)
+            service.addStudent("123", "boalfa", 112)
+            service.addGrade("123", "123", 9.0, 1, "Da")
+
+            Assertions.assertEquals(service.findAllGrades().toList().size, 1)
+        } catch (_: MyException) {
+            Assertions.fail()
         }
     }
 }

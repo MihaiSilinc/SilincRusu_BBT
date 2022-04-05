@@ -41,7 +41,7 @@ public class UI {
     }
 
     public void uiPrintAllTeme() {
-        for (Tema tema : service.findAllTeme()) {
+        for (Tema tema : service.findAllGrades()) {
             System.out.println(tema);
         }
     }
@@ -114,7 +114,7 @@ public class UI {
         System.out.println("Dati un feedback temei: ");
         String feedback = scanner.nextLine();
 
-        int result = service.saveNota(idStudent, idTema, valNota, predata, feedback);
+        int result = service.addGrade(idStudent, idTema, valNota, predata, feedback);
         if (result == 1) {
             service.createStudentFile(idStudent, idTema);
             System.out.println("Nota adaugata cu succes! \n");

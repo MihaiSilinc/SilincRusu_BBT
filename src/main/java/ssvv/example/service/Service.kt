@@ -1,129 +1,103 @@
-package ssvv.example.service;
+package ssvv.example.service
 
-import ssvv.example.domain.*;
-import ssvv.example.repository.*;
+import ssvv.example.repository.StudentXMLRepository
+import ssvv.example.repository.TemaXMLRepository
+import ssvv.example.repository.NotaXMLRepository
+import ssvv.example.domain.Student
+import ssvv.example.domain.Tema
+import ssvv.example.domain.Nota
+import ssvv.example.domain.Pair
+import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 
-import java.time.LocalDate;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
-
-public class Service {
-    private StudentXMLRepository studentXmlRepo;
-    private TemaXMLRepository temaXmlRepo;
-    private NotaXMLRepository notaXmlRepo;
-
-    public Service(StudentXMLRepository studentXmlRepo, TemaXMLRepository temaXmlRepo, NotaXMLRepository notaXmlRepo) {
-        this.studentXmlRepo = studentXmlRepo;
-        this.temaXmlRepo = temaXmlRepo;
-        this.notaXmlRepo = notaXmlRepo;
+class Service(private val studentXmlRepo: StudentXMLRepository, private val temaXmlRepo: TemaXMLRepository, private val notaXmlRepo: NotaXMLRepository) {
+    fun findAllStudents(): Iterable<Student> {
+        return studentXmlRepo.findAll()
     }
 
-    public Iterable<Student> findAllStudents() { return studentXmlRepo.findAll(); }
-
-    public Iterable<Tema> findAllTeme() { return temaXmlRepo.findAll(); }
-
-    public Iterable<Nota> findAllNote() { return notaXmlRepo.findAll(); }
-
-    public int addStudent(String id, String nume, int grupa) {
-        Student student = new Student(id, nume, grupa);
-        Student result = studentXmlRepo.save(student);
-
-        if (result == null) {
-            return 1;
-        }
-        return 0;
+    fun findAllGrades(): Iterable<Tema> {
+        return temaXmlRepo.findAll()
     }
 
-    public void addAssignment(String id, String descriere, int deadline, int startline) {
-        Tema tema = new Tema(id, descriere, deadline, startline);
-        temaXmlRepo.save(tema);
+    fun findAllNote(): Iterable<Nota> {
+        return notaXmlRepo.findAll()
     }
 
-    public int saveNota(String idStudent, String idTema, double valNota, int predata, String feedback) {
-        if (studentXmlRepo.findOne(idStudent) == null || temaXmlRepo.findOne(idTema) == null) {
-            return -1;
-        }
-        else {
-            int deadline = temaXmlRepo.findOne(idTema).getDeadline();
+    fun addStudent(id: String?, nume: String?, grupa: Int): Int {
+        val student = Student(id, nume, grupa)
+        val result = studentXmlRepo.save(student) ?: return 1
+        return 0
+    }
 
-            if (predata - deadline > 2) {
-                valNota =  1;
+    fun addAssignment(id: String?, descriere: String?, deadline: Int, startline: Int) {
+        val tema = Tema(id, descriere, deadline, startline)
+        temaXmlRepo.save(tema)
+    }
+
+    fun addGrade(idStudent: String, idTema: String, valNota: Double, predata: Int, feedback: String?): Int {
+        var valNota = valNota
+        return if (studentXmlRepo.findOne(idStudent) == null || temaXmlRepo.findOne(idTema) == null) {
+            -1
+        } else {
+            val deadline = temaXmlRepo.findOne(idTema).deadline
+            valNota = if (predata - deadline > 2) {
+                1.0
             } else {
-                valNota =  valNota - 2.5 * (predata - deadline);
+                if (predata > deadline) {
+                    valNota -= 2
+                }
+                valNota
             }
-            Nota nota = new Nota(new Pair(idStudent, idTema), valNota, predata, feedback);
-            Nota result = notaXmlRepo.save(nota);
-
-            if (result == null) {
-                return 1;
-            }
-            return 0;
+            val nota = Nota(Pair(idStudent, idTema), valNota, predata, feedback)
+            val result = notaXmlRepo.save(nota) ?: return 1
+            0
         }
     }
 
-    public int deleteStudent(String id) {
-        Student result = studentXmlRepo.delete(id);
-
-        if (result == null) {
-            return 0;
-        }
-        return 1;
+    fun deleteStudent(id: String): Int {
+        val result = studentXmlRepo.delete(id) ?: return 0
+        return 1
     }
 
-    public int deleteTema(String id) {
-        Tema result = temaXmlRepo.delete(id);
-
-        if (result == null) {
-            return 0;
-        }
-        return 1;
+    fun deleteTema(id: String): Int {
+        val result = temaXmlRepo.delete(id) ?: return 0
+        return 1
     }
 
-    public int updateStudent(String id, String numeNou, int grupaNoua) {
-        Student studentNou = new Student(id, numeNou, grupaNoua);
-        Student result = studentXmlRepo.update(studentNou);
-
-        if (result == null) {
-            return 0;
-        }
-        return 1;
+    fun updateStudent(id: String?, numeNou: String?, grupaNoua: Int): Int {
+        val studentNou = Student(id, numeNou, grupaNoua)
+        val result = studentXmlRepo.update(studentNou) ?: return 0
+        return 1
     }
 
-    public int updateTema(String id, String descriereNoua, int deadlineNou, int startlineNou) {
-        Tema temaNoua = new Tema(id, descriereNoua, deadlineNou, startlineNou);
-        Tema result = temaXmlRepo.update(temaNoua);
-
-        if (result == null) {
-            return 0;
-        }
-        return 1;
+    fun updateTema(id: String?, descriereNoua: String?, deadlineNou: Int, startlineNou: Int): Int {
+        val temaNoua = Tema(id, descriereNoua, deadlineNou, startlineNou)
+        val result = temaXmlRepo.update(temaNoua) ?: return 0
+        return 1
     }
 
-    public int extendDeadline(String id, int noWeeks) {
-        Tema tema = temaXmlRepo.findOne(id);
-
+    fun extendDeadline(id: String, noWeeks: Int): Int {
+        val tema = temaXmlRepo.findOne(id)
         if (tema != null) {
-            LocalDate date = LocalDate.now();
-            WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            int currentWeek = date.get(weekFields.weekOfWeekBasedYear());
-
-            if (currentWeek >= 39) {
-                currentWeek = currentWeek - 39;
+            val date = LocalDate.now()
+            val weekFields = WeekFields.of(Locale.getDefault())
+            var currentWeek = date[weekFields.weekOfWeekBasedYear()]
+            currentWeek = if (currentWeek >= 39) {
+                currentWeek - 39
             } else {
-                currentWeek = currentWeek + 12;
+                currentWeek + 12
             }
-
-            if (currentWeek <= tema.getDeadline()) {
-                int deadlineNou = tema.getDeadline() + noWeeks;
-                return updateTema(tema.getID(), tema.getDescriere(), deadlineNou, tema.getStartline());
+            if (currentWeek <= tema.deadline) {
+                val deadlineNou = tema.deadline + noWeeks
+                return updateTema(tema.id, tema.descriere, deadlineNou, tema.startline)
             }
         }
-        return 0;
+        return 0
     }
 
-    public void createStudentFile(String idStudent, String idTema) {
-        Nota nota = notaXmlRepo.findOne(new Pair(idStudent, idTema));
-
-        notaXmlRepo.createFile(nota);
+    fun createStudentFile(idStudent: String, idTema: String) {
+        val nota = notaXmlRepo.findOne(Pair(idStudent, idTema))
+        notaXmlRepo.createFile(nota)
     }
 }
