@@ -4,3 +4,9 @@ Predata in saptamana: 6
 Deadline: 7
 Feedback: feeback ok!
 
+Tema: 2
+Nota: 1.0
+Predata in saptamana: 155
+Deadline: 8
+Feedback: good
+
